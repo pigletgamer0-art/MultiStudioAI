@@ -50,7 +50,24 @@ jobs:
           base64 -d overlay-v04.b64 > overlay-v04.tar.gz
           echo '08484169e92d3d3975aec3d4e24f23245041184b3d10140e955ea72769098e3d  overlay-v04.tar.gz' | sha256sum -c -
           tar -xzf overlay-v04.tar.gz -C buildsrc/MultiAI_Android
+
+      - name: Apply MultiAI v0.5 alpha
+        run: |
+          cp v05/v05.js buildsrc/MultiAI_Android/app/src/main/assets/v05.js
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('buildsrc/MultiAI_Android/app/src/main/assets/index.html')
+          s=p.read_text()
+          s=s.replace('<script src="https://js.puter.com/v2/"></script>','')
+          s=s.replace('</body>','<script src="v05.js"></script>\n</body>')
+          s=s.replace('.auth-error{color:#fda4af;text-align:center;font-size:12px;margin-top:10px}', '.auth-error{color:#fda4af;text-align:center;font-size:12px;margin-top:10px}.auth-actions{display:grid;gap:10px;margin-top:18px}.auth-secondary{width:100%;border:1px solid #343434;border-radius:18px;padding:14px;background:#232323;color:#fff;font-weight:700}.auth-secondary.google{background:#fff;color:#111}.auth-link{background:transparent;border:0;color:#aaa;padding:10px}.auth-form{display:none;gap:10px;margin-top:14px}.auth-form.show{display:grid}.auth-form input{width:100%;border:1px solid #383838;border-radius:14px;background:#0d0d0d;color:#fff;padding:13px;outline:none}.plan-badge{display:inline-flex;align-items:center;gap:6px;margin-top:6px;padding:5px 9px;border-radius:999px;background:#ffffff10;color:#d7d7d7;font-size:12px}.plan-badge.plus{background:linear-gradient(90deg,#7c3aed44,#06b6d444);color:#fff;border:1px solid #8b5cf666}')
+          p.write_text(s)
+          b=Path('buildsrc/MultiAI_Android/app/build.gradle')
+          t=b.read_text().replace('versionCode 4','versionCode 5').replace("versionName '0.4.0'","versionName '0.5.0-alpha'")
+          b.write_text(t)
+          PY
           grep -n "versionName" buildsrc/MultiAI_Android/app/build.gradle
+          grep -n "v05.js" buildsrc/MultiAI_Android/app/src/main/assets/index.html
 
       - name: Build debug APK
         working-directory: buildsrc/MultiAI_Android
@@ -59,6 +76,6 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: MultiAI-v0.4-debug-apk
+          name: MultiAI-v0.5-alpha-debug-apk
           path: buildsrc/MultiAI_Android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
