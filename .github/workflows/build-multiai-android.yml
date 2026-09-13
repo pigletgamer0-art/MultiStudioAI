@@ -86,8 +86,21 @@ jobs:
           t=b.read_text().replace('versionCode 6','versionCode 7').replace("versionName '0.5.1-alpha'","versionName '0.5.2-alpha'")
           b.write_text(t)
           PY
+
+      - name: Apply MultiAI v0.5.3 legacy auth fix
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          b=Path('buildsrc/MultiAI_Android/app/build.gradle')
+          t=b.read_text().replace('versionCode 7','versionCode 8').replace("versionName '0.5.2-alpha'","versionName '0.5.3-alpha'")
+          b.write_text(t)
+          p=Path('buildsrc/MultiAI_Android/app/src/main/assets/index.html')
+          s=p.read_text().replace('MultiAI v0.5.2 alpha','MultiAI v0.5.3 alpha')
+          p.write_text(s)
+          PY
           grep -n "versionName" buildsrc/MultiAI_Android/app/build.gradle
-          grep -n "v052.js" buildsrc/MultiAI_Android/app/src/main/assets/index.html
+          grep -n "Configura el servidor MultiAI en Ajustes > Seguridad o entra como invitado" buildsrc/MultiAI_Android/app/src/main/assets/v05.js && exit 1 || true
+          grep -n "V05_localRegister" buildsrc/MultiAI_Android/app/src/main/assets/v05.js
 
       - name: Build debug APK
         working-directory: buildsrc/MultiAI_Android
@@ -96,6 +109,6 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: MultiAI-v0.5.2-alpha-debug-apk
+          name: MultiAI-v0.5.3-alpha-debug-apk
           path: buildsrc/MultiAI_Android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
