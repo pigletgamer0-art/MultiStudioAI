@@ -43,7 +43,29 @@ jobs:
           cat v03/part_* > overlay.b64
           base64 -d overlay.b64 > overlay.tar.gz
           tar -xzf overlay.tar.gz -C buildsrc/MultiAI_Android
+
+      - name: Apply v0.3.1 single-key behavior
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('buildsrc/MultiAI_Android/app/src/main/assets/index.html')
+          s=p.read_text()
+          s=s.replace('Puedes guardar varias claves a la vez. Se cifran con Android Keystore y MultiAI usa automáticamente la correspondiente a la IA elegida.','<b>Con una sola API key basta.</b> Puede ser de OpenAI, Claude, Gemini, Groq, DeepSeek, Mistral, xAI, OpenRouter o un proveedor compatible. OpenAI es opcional. También puedes guardar más de una si quieres cambiar de IA.')
+          s=s.replace('MultiAI v<span id="version">0.3.0</span>','MultiAI v<span id="version">0.3.1</span>')
+          s=s.replace("function loadState(){", "function firstConfiguredProvider(){if(!isAndroid)return null;return Object.keys(PROVIDERS).find(id=>Android.hasApiKey(id))||null}\nfunction loadState(){", 1)
+          s=s.replace("if(!PROVIDERS[state.settings.provider])state.settings.provider='openai';const p=PROVIDERS[state.settings.provider];", "if(!PROVIDERS[state.settings.provider])state.settings.provider='openai';const configured=firstConfiguredProvider();if(isAndroid&&!Android.hasApiKey(state.settings.provider)&&configured){state.settings.provider=configured;state.settings.baseUrl=PROVIDERS[configured].base;state.settings.model=PROVIDERS[configured].model}const p=PROVIDERS[state.settings.provider];", 1)
+          s=s.replace("if(!activeProviderReady()){toast('Falta la API key de '+providerInfo().label+'.',true);switchView('settings');return}", "if(!activeProviderReady()){toast('Agrega una API key de cualquier proveedor. OpenAI no es obligatorio.',true);switchView('settings');return}")
+          s=s.replace("function saveProviderKey(id){if(!isAndroid)return toast('Las claves seguras se guardan en Android.',true);const el=$('#key_'+id),key=el?.value.trim();if(!key)return toast('Pega una API key.',true);Android.saveApiKey(id,key);el.value='';renderProviderKeys();updateKeyStatus();toast('Key de '+PROVIDERS[id].label+' guardada')}", "function saveProviderKey(id){if(!isAndroid)return toast('Las claves seguras se guardan en Android.',true);const el=$('#key_'+id),key=el?.value.trim();if(!key)return toast('Pega una API key.',true);Android.saveApiKey(id,key);el.value='';state.settings.provider=id;state.settings.baseUrl=PROVIDERS[id].base;state.settings.model=PROVIDERS[id].model;localStorage.setItem('multiai_settings',JSON.stringify(state.settings));$('#providerSelect').value=id;$('#baseUrl').value=state.settings.baseUrl;$('#chatModel').value=state.settings.model;$('#modelChip').textContent=PROVIDERS[id].label+' · '+state.settings.model;renderProviderKeys();updateKeyStatus();toast('Key de '+PROVIDERS[id].label+' guardada y activada')}")
+          s=s.replace("function removeProviderKey(id){if(!isAndroid)return;Android.clearApiKey(id);renderProviderKeys();updateKeyStatus();toast('Key eliminada')}", "function removeProviderKey(id){if(!isAndroid)return;Android.clearApiKey(id);if(state.settings.provider===id){const next=firstConfiguredProvider();if(next){state.settings.provider=next;state.settings.baseUrl=PROVIDERS[next].base;state.settings.model=PROVIDERS[next].model;$('#providerSelect').value=next;$('#baseUrl').value=state.settings.baseUrl;$('#chatModel').value=state.settings.model;$('#modelChip').textContent=PROVIDERS[next].label+' · '+state.settings.model;localStorage.setItem('multiai_settings',JSON.stringify(state.settings))}}renderProviderKeys();updateKeyStatus();toast('Key eliminada')}")
+          s=s.replace("function updateKeyStatus(){const id=state.settings.provider||'openai',p=PROVIDERS[id]||PROVIDERS.openai,yes=isAndroid?Android.hasApiKey(id):false;$('#keyDot').classList.toggle('ok',yes);$('#keyStatus').textContent=yes?'Key de '+p.label+' guardada':'Sin key para '+p.label;$('#keyHint').textContent=yes?p.label+' listo':'Configura '+p.label;renderProviderKeys()}", "function updateKeyStatus(){const id=state.settings.provider||'openai',p=PROVIDERS[id]||PROVIDERS.openai,yes=isAndroid?Android.hasApiKey(id):false,any=firstConfiguredProvider();$('#keyDot').classList.toggle('ok',yes);$('#keyStatus').textContent=yes?'Key de '+p.label+' guardada':any?'Hay una key configurada; selecciona su proveedor':'Sin API key. Agrega una de cualquier proveedor';$('#keyHint').textContent=yes?p.label+' listo':any?PROVIDERS[any].label+' disponible':'Agrega una API key';renderProviderKeys()}")
+          s=s.replace("return toast('Falta la API key de '+info.label+'.',true)", "return toast('Para generar imágenes falta una key compatible de '+info.label+'. El chat puede usar cualquier otro proveedor.',true)")
+          p.write_text(s)
+          b=Path('buildsrc/MultiAI_Android/app/build.gradle')
+          t=b.read_text().replace('versionCode 3','versionCode 4').replace("versionName '0.3.0'","versionName '0.3.1'")
+          b.write_text(t)
+          PY
           grep -n "versionName" buildsrc/MultiAI_Android/app/build.gradle
+          grep -n "Con una sola API key" buildsrc/MultiAI_Android/app/src/main/assets/index.html
 
       - name: Build debug APK
         working-directory: buildsrc/MultiAI_Android
@@ -52,6 +74,6 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: MultiAI-v0.3-debug-apk
+          name: MultiAI-v0.3.1-debug-apk
           path: buildsrc/MultiAI_Android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
