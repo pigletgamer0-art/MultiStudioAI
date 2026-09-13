@@ -44,10 +44,11 @@ jobs:
           base64 -d overlay.b64 > overlay.tar.gz
           tar -xzf overlay.tar.gz -C buildsrc/MultiAI_Android
 
-      - name: Apply MultiAI v0.4 files
+      - name: Apply verified MultiAI v0.4 files
         run: |
-          cat v04/part_* > overlay-v04.b64
+          cat v04fresh/part_* > overlay-v04.b64
           base64 -d overlay-v04.b64 > overlay-v04.tar.gz
+          echo '08484169e92d3d3975aec3d4e24f23245041184b3d10140e955ea72769098e3d  overlay-v04.tar.gz' | sha256sum -c -
           tar -xzf overlay-v04.tar.gz -C buildsrc/MultiAI_Android
           grep -n "versionName" buildsrc/MultiAI_Android/app/build.gradle
 
