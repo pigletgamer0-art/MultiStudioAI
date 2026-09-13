@@ -1,0 +1,16 @@
+ $$('.quick button[data-prompt]').forEach(b=>b.onclick=()=>{$('#prompt').value=b.dataset.prompt;autoGrow();sendMessage()});$('#quickImage').onclick=$('#generateImageBtn').onclick=()=>showModal('imageModal');$('#doGenerateImage').onclick=generateImage;$$('#bottomnav button').forEach(b=>b.onclick=()=>switchView(b.dataset.view));$('#saveSettingsBtn').onclick=saveSettings;$('#testBtn').onclick=testConnection;$('#clearDataBtn').onclick=clearData;$('#newChatBtn').onclick=()=>newChat(true);$('#drawerNewChat').onclick=()=>{newChat(true);closeDrawer()};$('#historyBtn').onclick=()=>{$('#drawerBg').classList.add('show');renderHistory()};$('#closeDrawer').onclick=closeDrawer;$('#drawerBg').addEventListener('click',e=>{if(e.target.id==='drawerBg')closeDrawer()});$$('[data-close]').forEach(b=>b.onclick=()=>hideModal(b.dataset.close));$$('.modal-bg').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)hideModal(m.id)}));$('#previewDownload').onclick=()=>state.previewArtifact&&downloadArtifact(state.previewArtifact.id);$('#previewShare').onclick=()=>state.previewArtifact&&shareText(state.previewArtifact.content);
++
++$('#chatModeBtn')?.addEventListener('click',()=>{switchView('chat');$('#chatModeBtn').classList.add('active');$('#createModeBtn').classList.remove('active')});
++$('#createModeBtn')?.addEventListener('click',()=>{switchView('create');$('#createModeBtn').classList.add('active');$('#chatModeBtn').classList.remove('active')});
++$$('#bottomnav button').forEach(b=>b.addEventListener('click',()=>{closeDrawer();$('#chatModeBtn').classList.toggle('active',b.dataset.view==='chat');$('#createModeBtn').classList.toggle('active',b.dataset.view==='create'||b.dataset.view==='files'||b.dataset.view==='images')}));
++
++$$('[data-create]').forEach(b=>b.addEventListener('click',()=>{
++  const kind=b.dataset.create;
++  if(kind==='image'){showModal('imageModal');return}
++  if(kind==='analyze'){switchView('chat');$('#chatModeBtn').classList.add('active');$('#createModeBtn').classList.remove('active');if(isAndroid)Android.pickFile('*/*');else toast('El selector nativo funciona en Android.',true);return}
++  const prompts={document:'Crea un documento profesional sobre este tema y entrégamelo como archivo descargable: ',web:'Crea un sitio web moderno y completo, con HTML, CSS y JavaScript, y entrégame todos los archivos descargables: ',code:'Ayúdame a crear este programa. Genera el código completo y los archivos necesarios: '};
++  switchView('chat');$('#chatModeBtn').classList.add('active');$('#createModeBtn').classList.remove('active');$('#prompt').value=prompts[kind]||'';autoGrow();$('#prompt').focus();
++}));
+ window.addEventListener('beforeunload',()=>{if(state.messages.length)saveState()});loadState();
+ </script>
+ </body>

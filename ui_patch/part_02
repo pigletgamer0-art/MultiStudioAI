@@ -1,0 +1,66 @@
+ <body>
+ <div class="app">
+   <header class="topbar">
+-    <button class="icon" id="historyBtn">☰</button>
+-    <div class="logo">✦</div>
+-    <div class="brand"><b>MultiAI</b><small id="subtitle">Asistente completo</small></div>
++    <button class="icon" id="historyBtn" aria-label="Menú"><span class="menu-lines"><i></i><i></i><i></i></span></button>
++    <div class="mode-switch" aria-label="Modo">
++      <button id="chatModeBtn" class="active" type="button">Chat</button>
++      <button id="createModeBtn" type="button">Crear</button>
++    </div>
++    <button class="icon" id="newChatBtn" aria-label="Nuevo chat"><span class="chat-glyph"></span></button>
+     <div class="model-chip" id="modelChip">gpt-5.6-luna</div>
+-    <button class="icon" id="newChatBtn">＋</button>
+   </header>
+ 
+   <div class="views">
+     <section class="view active" id="chatView">
+       <div class="chat-scroll" id="chatScroll">
+         <div class="hero" id="hero">
+-          <span class="pill">✦ IA + archivos + imágenes</span>
+-          <h1>¿Qué quieres crear?</h1>
+-          <p>Pregunta, programa, crea archivos descargables, analiza imágenes y genera fotos desde una sola app.</p>
++          <span class="pill">MultiAI</span><h1>¿Qué quieres crear?</h1><p>Asistente completo.</p>
+           <div class="quick">
+-            <button data-prompt="Crea una página HTML moderna de una tienda de videojuegos y entrégamela como archivo descargable.">🌐 Crear una web</button>
+-            <button data-prompt="Crea un archivo JSON de ejemplo para una base de datos de videojuegos y entrégamelo para descargar.">📄 Crear archivo</button>
+-            <button data-prompt="Ayúdame a programar una app Android en Kotlin.">💻 Programar</button>
+-            <button id="quickImage">🖼️ Generar imagen</button>
++            <button data-prompt="Recomiéndame algo interesante para ver hoy.">Recomendaciones para hoy</button>
++            <button data-prompt="Crea una página HTML moderna y entrégamela como archivo descargable.">Crear una web descargable</button>
++            <button data-prompt="Ayúdame a programar una app Android en Kotlin.">Programar una app</button>
++            <button id="quickImage">Generar una imagen</button>
+           </div>
+         </div>
+         <div class="messages" id="messages"></div>
+@@ -53,9 +104,9 @@
+           <div class="attachments hidden" id="attachmentStrip"></div>
+           <div class="composer">
+             <button class="tool-btn" id="attachBtn" title="Adjuntar">＋</button>
+-            <button class="tool-btn" id="webBtn" title="Buscar en la web">🌐</button>
+-            <button class="tool-btn" id="micBtn" title="Hablar">🎙️</button>
+-            <textarea id="prompt" rows="1" placeholder="Escribe lo que quieras…"></textarea>
++            <button class="tool-btn" id="webBtn" title="Buscar en la web">Web</button>
++            <textarea id="prompt" rows="1" placeholder="Preguntar a MultiAI"></textarea>
++            <button class="tool-btn" id="micBtn" title="Hablar">🎙</button>
+             <button class="send" id="sendBtn">➤</button>
+           </div>
+           <div class="composer-note"><span id="keyHint">Configura tu API key</span><span id="attachHint">Archivos e imágenes</span></div>
+@@ -63,45 +114,48 @@
+       </div>
+     </section>
+ 
+-    <section class="view" id="filesView">
+-      <div class="section"><h2>Archivos</h2><p>Todo lo que la IA crea como archivo aparece aquí para previsualizarlo o guardarlo.</p><div id="fileList" class="file-list"></div></div>
+-    </section>
+-    <section class="view" id="imagesView">
+-      <div class="section"><h2>Imágenes</h2><p>Genera imágenes con tu proveedor y guárdalas directamente en Descargas/MultiAI.</p><button class="primary" id="generateImageBtn">✦ Generar imagen</button><div style="height:12px"></div><div id="imageGrid" class="image-grid"></div></div>
++    <section class="view" id="createView">
++      <div class="create-shell">
++        <div class="create-title"><h2>Crear</h2><p>Elige qué quieres hacer. MultiAI puede generar contenido, código, imágenes y archivos descargables.</p></div>
++        <div class="create-grid">
++          <button class="create-card" data-create="image"><span class="create-icon">◫</span><div><b>Imagen</b><small>Genera una imagen desde una descripción.</small></div></button>
++          <button class="create-card" data-create="document"><span class="create-icon">▤</span><div><b>Documento</b><small>Crea documentos y archivos listos para descargar.</small></div></button>
++          <button class="create-card" data-create="web"><span class="create-icon">⌘</span><div><b>Sitio web</b><small>Genera HTML, CSS y JavaScript con vista previa.</small></div></button>
++          <button class="create-card" data-create="code"><span class="create-icon">&lt;/&gt;</span><div><b>Código</b><small>Programa, corrige y explica proyectos.</small></div></button>

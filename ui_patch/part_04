@@ -1,0 +1,21 @@
++    <button data-view="images"><span><svg class="nav-icon-svg" viewBox="0 0 24 24"><rect x="3" y="5" width="15" height="14" rx="2"></rect><circle cx="8" cy="10" r="1.5"></circle><path d="m5 17 4-4 3 3 2-2 4 4"></path><path d="M8 3h13v13"></path></svg></span>Imágenes</button>
++    <button data-view="files"><span><svg class="nav-icon-svg" viewBox="0 0 24 24"><rect x="3" y="4" width="5" height="16" rx="1"></rect><rect x="10" y="4" width="5" height="16" rx="1"></rect><rect x="17" y="4" width="4" height="16" rx="1"></rect></svg></span>Biblioteca</button>
++    <button data-view="create"><span><svg class="nav-icon-svg" viewBox="0 0 24 24"><path d="M3 7h6l2 2h10v10H3z"></path><path d="M3 7V5h7l2 2"></path></svg></span>Proyectos</button>
++    <button data-view="settings"><span><svg class="nav-icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.5-2.4 1a7 7 0 0 0-1.7-1L14.5 3h-5L9 6a7 7 0 0 0-1.7 1L5 6 3 9.5 5 11a7 7 0 0 0 0 2l-2 1.5L5 18l2.3-1a7 7 0 0 0 1.7 1l.5 3h5l.5-3a7 7 0 0 0 1.7-1l2.3 1 2-3.5-2-1.5a7 7 0 0 0 .1-1z"></path></svg></span>Ajustes</button>
+   </nav>
+-</div>
++  <div class="drawer-section-title">Recientes</div>
++  <div id="historyList" class="drawer-history"></div>
++  <button class="drawer-new" id="drawerNewChat">＋ Nuevo chat</button>
++  <div class="drawer-profile"><div class="avatar-user">AI</div><div><b>MultiAI</b><small style="display:block;color:#aaa">Asistente</small></div></div>
++</aside></div>
+ 
+-<div class="drawer-bg" id="drawerBg"><aside class="drawer"><div class="drawer-head"><h3>Conversaciones</h3><button class="close" id="closeDrawer">✕</button></div><button class="primary" style="width:100%" id="drawerNewChat">＋ Nueva conversación</button><div id="historyList"></div></aside></div>
+ <div class="modal-bg" id="previewModal"><div class="modal"><div class="modal-head"><h3 id="previewTitle">Vista previa</h3><button class="close" data-close="previewModal">✕</button></div><div id="previewBody" style="margin-top:12px"></div><div style="display:flex;gap:8px;margin-top:12px"><button class="primary" id="previewDownload">⬇ Descargar</button><button class="secondary" id="previewShare">Compartir</button></div></div></div>
+-<div class="modal-bg" id="imageModal"><div class="modal"><div class="modal-head"><h3>Generar imagen</h3><button class="close" data-close="imageModal">✕</button></div><label class="field"><span>Describe la imagen</span><textarea id="imagePrompt" placeholder="Un paisaje futurista bajo lluvia neón…"></textarea></label><label class="field"><span>Tamaño</span><select id="imageSize"><option>1024x1024</option><option>1024x1536</option><option>1536x1024</option></select></label><label class="field"><span>Calidad</span><select id="imageQuality"><option value="medium">Media</option><option value="high">Alta</option><option value="xhigh">Muy alta</option><option value="auto">Automática</option></select></label><button class="primary" id="doGenerateImage" style="width:100%">✦ Generar</button></div></div>
++<div class="modal-bg" id="imageModal"><div class="modal"><div class="modal-head"><h3>Generar imagen</h3><button class="close" data-close="imageModal">✕</button></div><label class="field"><span>Describe la imagen</span><textarea id="imagePrompt" placeholder="Describe lo que quieres generar…"></textarea></label><label class="field"><span>Tamaño</span><select id="imageSize"><option>1024x1024</option><option>1024x1536</option><option>1536x1024</option></select></label><label class="field"><span>Calidad</span><select id="imageQuality"><option value="medium">Media</option><option value="high">Alta</option><option value="xhigh">Muy alta</option><option value="auto">Automática</option></select></label><button class="primary" id="doGenerateImage" style="width:100%">✦ Generar</button></div></div>
+ <div class="toast" id="toast"></div>
+ 
+ <script>
+@@ -151,7 +205,7 @@
+ function renderImages(){const root=$('#imageGrid');root.innerHTML=state.images.length?[...state.images].reverse().map(im=>`<div class="img-card"><img src="data:${im.mime};base64,${im.base64}"><div class="cap"><small>${escapeHtml(im.prompt)}</small><button onclick="saveGeneratedImage('${im.id}')">⬇ Guardar</button></div></div>`).join(''):'<div class="empty" style="grid-column:1/-1">Todavía no has generado imágenes.</div>'}

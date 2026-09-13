@@ -1,0 +1,42 @@
++          <button class="create-card wide" data-create="analyze"><span class="create-icon">＋</span><div><b>Analizar un archivo</b><small>Adjunta una imagen, texto o archivo para trabajar con él.</small></div></button>
++        </div>
++      </div>
+     </section>
++
++    <section class="view" id="filesView"><div class="section"><h2>Biblioteca</h2><p>Archivos y creaciones de MultiAI, con vista previa y descarga.</p><div id="fileList" class="file-list"></div></div></section>
++    <section class="view" id="imagesView"><div class="section"><h2>Imágenes</h2><p>Genera y guarda imágenes directamente en el teléfono.</p><button class="primary" id="generateImageBtn">✦ Generar imagen</button><div style="height:12px"></div><div id="imageGrid" class="image-grid"></div></div></section>
+     <section class="view" id="settingsView">
+-      <div class="section"><h2>Ajustes</h2><p>La API key se guarda cifrada con Android Keystore y no se incluye dentro del APK.</p>
+-        <div class="card">
+-          <h3 style="margin-top:0">Proveedor</h3>
+-          <label class="field"><span>API base</span><input id="baseUrl" placeholder="https://api.openai.com/v1"></label>
+-          <label class="field"><span>Modelo de chat</span><input id="chatModel" placeholder="gpt-5.6-luna"></label>
+-          <label class="field"><span>Modelo de imágenes</span><input id="imageModel" placeholder="gpt-image-2"></label>
+-          <label class="field"><span>API key</span><input id="apiKey" type="password" placeholder="Pega una API key"></label>
+-          <div class="status"><span class="dot" id="keyDot"></span><span id="keyStatus">Sin API key</span></div>
+-          <div style="display:flex;gap:8px;margin-top:12px"><button class="primary" id="saveSettingsBtn">Guardar</button><button class="secondary" id="testBtn">Probar conexión</button></div>
+-        </div>
+-        <div class="card">
+-          <h3 style="margin-top:0">Comportamiento</h3>
+-          <label class="switch"><span>Permitir búsqueda web cuando esté activada en el chat</span><input id="allowWeb" type="checkbox" checked></label>
+-          <label class="field"><span>Prompt del sistema</span><textarea id="systemPrompt"></textarea></label>
+-        </div>
++      <div class="section"><h2>Ajustes</h2><p>Configura el proveedor, modelos y privacidad.</p>
++        <div class="card"><h3 style="margin-top:0">Proveedor</h3><label class="field"><span>API base</span><input id="baseUrl" placeholder="https://api.openai.com/v1"></label><label class="field"><span>Modelo de chat</span><input id="chatModel" placeholder="gpt-5.6-luna"></label><label class="field"><span>Modelo de imágenes</span><input id="imageModel" placeholder="gpt-image-2"></label><label class="field"><span>API key</span><input id="apiKey" type="password" placeholder="Pega una API key"></label><div class="status"><span class="dot" id="keyDot"></span><span id="keyStatus">Sin API key</span></div><div style="display:flex;gap:8px;margin-top:12px"><button class="primary" id="saveSettingsBtn">Guardar</button><button class="secondary" id="testBtn">Probar conexión</button></div></div>
++        <div class="card"><h3 style="margin-top:0">Comportamiento</h3><label class="switch"><span>Permitir búsqueda web cuando esté activada en el chat</span><input id="allowWeb" type="checkbox" checked></label><label class="field"><span>Prompt del sistema</span><textarea id="systemPrompt"></textarea></label></div>
+         <div class="card"><h3 style="margin-top:0">Datos locales</h3><button class="danger" id="clearDataBtn">Borrar conversaciones y archivos de la app</button></div>
+-        <div class="card"><small style="color:var(--muted)">MultiAI v<span id="version">0.1.0</span> · Los costos y límites dependen del proveedor de IA configurado.</small></div>
++        <div class="card"><small style="color:var(--muted)">MultiAI v<span id="version">0.2.0</span> · La API key se guarda cifrada con Android Keystore.</small></div>
+       </div>
+     </section>
+   </div>
++</div>
+ 
+-  <nav class="bottomnav" id="bottomnav">
+-    <button class="active" data-view="chat"><span>💬</span>Chat</button>
+-    <button data-view="files"><span>📁</span>Archivos</button>
+-    <button data-view="images"><span>🖼️</span>Imágenes</button>
+-    <button data-view="settings"><span>⚙️</span>Ajustes</button>
++<div class="drawer-bg" id="drawerBg"><aside class="drawer">
++  <div class="drawer-head"><div class="drawer-brand-row"><h3>MultiAI</h3><button class="drawer-search" type="button" aria-label="Buscar"><svg class="menu-icon-svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg></button><button class="close" id="closeDrawer">✕</button></div></div>
++  <nav id="bottomnav">
