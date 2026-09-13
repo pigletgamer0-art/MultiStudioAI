@@ -66,8 +66,13 @@ jobs:
           t=b.read_text().replace('versionCode 4','versionCode 5').replace("versionName '0.4.0'","versionName '0.5.0-alpha'")
           b.write_text(t)
           PY
+
+      - name: Apply MultiAI v0.5.1 account fixes
+        run: |
+          python v051/apply.py buildsrc/MultiAI_Android
           grep -n "versionName" buildsrc/MultiAI_Android/app/build.gradle
-          grep -n "v05.js" buildsrc/MultiAI_Android/app/src/main/assets/index.html
+          grep -n "play-services-auth" buildsrc/MultiAI_Android/app/build.gradle
+          grep -n "startGoogleSignIn" buildsrc/MultiAI_Android/app/src/main/java/com/multiai/assistant/MainActivity.kt
 
       - name: Build debug APK
         working-directory: buildsrc/MultiAI_Android
@@ -76,6 +81,6 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: MultiAI-v0.5-alpha-debug-apk
+          name: MultiAI-v0.5.1-alpha-debug-apk
           path: buildsrc/MultiAI_Android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
