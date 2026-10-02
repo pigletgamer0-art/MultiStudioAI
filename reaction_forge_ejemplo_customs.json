@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "custom": [
+    {
+      "id": "rf_custom_luz_liquida",
+      "name": "Luz líquida",
+      "color": "#ffd469",
+      "state": "liquid",
+      "density": 1100
+    },
+    {
+      "id": "rf_custom_polvo_cometa",
+      "name": "Polvo de cometa",
+      "color": "#8a81ee",
+      "state": "solid",
+      "density": 1700
+    }
+  ],
+  "recipes": [
+    {
+      "a": "rf_custom_luz_liquida",
+      "b": "rf_custom_polvo_cometa",
+      "out": "rf_star_crystal",
+      "contact": false
+    }
+  ],
+  "generated": []
+}
