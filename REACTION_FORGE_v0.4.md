@@ -1,38 +1,30 @@
-# Reaction Forge — Script v0.4 para Mod Studio de Sandboxels
+# Reaction Forge v0.4 — mezclas automáticas para Sandboxels
 
-## Instalación
+## Instalación directa en Sandboxels
 
-1. Abre Sandboxels con Mod Studio instalado.
-2. En **Mod Studio → Editor**, crea un proyecto nuevo.
-3. Pega TODO el contenido del archivo `Reaction_Forge_Mod_Studio_v0.4.js`.
-4. Guarda, activa el proyecto y recarga Sandboxels.
-5. Coloca dos o más elementos distintos que se toquen para que el contacto cree una nueva mezcla ficticia.
+1. Abre https://sandboxels.r74n.com/.
+2. Abre **Mods**.
+3. Agrega esta URL completa del script:
 
-Desactiva otras versiones de Reaction Forge (como la v0.3 o la prueba anterior) antes de recargar, para evitar conflictos.
+`https://cdn.jsdelivr.net/gh/pigletgamer0-art/MultiStudioAI@sandboxels-reaction-forge-v0.4/reaction_forge.js`
 
-## Cambios respecto a v0.3-test
+Si el CDN todavía no está actualizado, prueba la URL alternativa:
 
-- Las masas de un solo material ya no generan compuestos nuevos.
-- Agrupa hasta 6 materiales distintos cercanos; un montón de agua ya no desplaza otro ingrediente.
-- Las reacciones originales tienen prioridad: todos los pares del grupo se comprueban.
-- Las mezclas se preparan y validan antes de escribirlas y consumir los píxeles.
-- Los resultados se pueden combinar más adelante colocándoles al lado un nuevo elemento.
-- Compatible con los elementos físicos de otros mods, excluidas las herramientas que no crean píxeles.
-- Registro antes y después de cargar Sandboxels.
-- Lectura defensiva de recetas anteriores en `reaction_forge_modstudio_test_v1`.
-- Protección contra sobrecarga: máximo 6 reacciones por ciclo y 3000 recetas guardadas.
+`https://raw.githubusercontent.com/pigletgamer0-art/MultiStudioAI/sandboxels-reaction-forge-v0.4/reaction_forge.js`
 
-## Datos y privacidad
+4. Desactiva versiones previas de Reaction Forge para evitar conflictos.
+5. Recarga Sandboxels y coloca dos o más elementos distintos tocándose.
 
-Las mezclas se guardan únicamente en `localStorage` del navegador, sin enviarse a un servidor. Borra o exporta los datos antes de eliminar almacenamiento del sitio.
+## Instalación mediante Mod Studio
 
-Desde la consola del navegador puedes usar:
-- `ReactionForgeTest.stats()` para consultar el estado.
-- `ReactionForgeTest.pause()` y `.resume()` para parar/reanudar combinaciones.
-- `ReactionForgeTest.exportJSON()` para copiar todas las recetas como texto JSON.
+También puedes copiar el contenido de `reaction_forge.js` a un proyecto de Mod Studio. Activa **solo una** instalación a la vez.
 
-**Advertencias:** las mezclas son ficticias, no química real; las herramientas que no crean píxeles no participan en mezclas espaciales. Al mezclar, se consumen los píxeles originales. Conserva una copia de mundos importantes.
+## Características
 
-## Validación
+- Reacciones directas al poner juntos de 2 a 6 elementos distintos, sin menús.
+- Mezclas ficticias generadas a partir de elementos base, de otros mods y de resultados anteriores.
+- Protecciones para reacciones existentes y límites de rendimiento.
+- Guardado local y recuperación de combinaciones.
 
-19 pruebas unitarias simuladas en Node.js y comprobación de sintaxis JavaScript. No se pudo completar una prueba de navegador real en este entorno, por lo que la integración con el Sandboxels oficial queda por verificar.
+**Estado:** código comprobado en GitHub y sintaxis JavaScript verificada. Integración en el Sandboxels oficial y acceso CDN aún pendientes de verificar por este entorno.
+
