@@ -82,7 +82,7 @@ Algunos de estos nombres también aparecen en 2.0 o pueden corresponder a códig
 
 ## 5. Identidad visual acordada
 
-El usuario confirmó que la aplicación unificada debe conservar el logotipo de 2.0 (icono azul con franja blanca angular), no el icono cubo/reproducción de 2.5. Las capturas de referencia están en la conversación; no se han sustituido todavía los recursos launcher dentro de un proyecto Android porque aún no existe proyecto reconstruido.
+El usuario confirmó que la aplicación unificada debe conservar el logotipo de 2.0 (icono azul con franja blanca angular), no el icono cubo/reproducción de 2.5. Se inspeccionó el recurso launcher real del APK 2.0 (`res/mipmap-xxxhdpi-v4/ic_launcher.webp`) y coincide visualmente con la imagen de referencia aportada. El recurso se extrajo para análisis local, pero todavía no se ha añadido como asset al repositorio ni aplicado a un proyecto Android: aún no existe proyecto reconstruido.
 
 ## 6. Decisión técnica provisional
 
