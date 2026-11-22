@@ -15,7 +15,7 @@ Los APK se han inspeccionado directamente: inventario ZIP, hashes SHA-256, estru
 
 ## Hallazgos verificables
 - 2.0: 16 archivos DEX; 2.5: 11.
-- Las dos versiones comparten 42 archivos de fuentes y 134 archivos de materiales, idénticos byte a byte.
+- Los application ID son distintos: 2.0 usa `com.exampletest.mobilestudiotest` y 2.5 `com.tetrazbloxy.mobilestudio`; no se instalarán como una actualización mutua sin elegir y adaptar un único ID.\n- Las dos versiones comparten 42 archivos de fuentes y 134 archivos de materiales, idénticos byte a byte.
 - De 967 rutas comunes, 245 son idénticas y 722 difieren.
 - El informe detallado está en [docs/APK_AUDIT.md](docs/APK_AUDIT.md).
 
