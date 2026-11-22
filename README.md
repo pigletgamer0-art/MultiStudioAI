@@ -21,7 +21,7 @@ Los APK se han inspeccionado directamente: inventario ZIP, hashes SHA-256, estru
 
 ## Herramientas
 - `python tools/inspect_apks.py archivo.apk`: inventario y SHA-256.
-- `python tools/compare_apks.py version2.0.apk version2.5.apk`: comparación reproducible de estructura, tamaños DEX y hashes de recursos.
+- `python tools/compare_apks.py version2.0.apk version2.5.apk`: comparación reproducible de estructura, tamaños DEX y hashes de recursos.\n- `python tools/manifest_summary.py archivo.apk`: muestra package ID, versión, SDK, permisos y componentes del manifiesto binario.
 
 ## Archivos originales
 Por seguridad y por límites prácticos de publicación, los APK originales no se incluyen en este repositorio público. Consérvalos localmente y verifica sus hashes con el informe.
