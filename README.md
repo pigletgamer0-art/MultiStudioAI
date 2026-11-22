@@ -37,3 +37,8 @@ Los APK originales no se incluyen en este repositorio público porque no se ha c
 3. Descompilar DEX con JADX y comparar clases/métodos.
 4. Confirmar derechos de modificación y redistribución de los componentes.
 5. Reconstruir en un proyecto Android independiente y probar en dispositivo/emulador.
+
+
+## Aplicación web Mobile Studio
+
+La primera reconstrucción web está en [`mobile-studio-web/`](mobile-studio-web/). Para desplegarla en Vercel, importa este repositorio y establece `mobile-studio-web` como **Root Directory**. Es una base funcional incremental; las limitaciones y funciones pendientes están documentadas en su README.
