@@ -9,19 +9,26 @@ Este repositorio documenta el análisis de los APK de Mobile Studio 2.0 y 2.5 y 
 - No declarar una integración terminada hasta compilar e instalar una aplicación reconstruida y probar sus funciones.
 
 ## Estado real
-**Fase actual: inventario estático de APK. No existe todavía una aplicación unificada ni un proyecto Android compilable.**
+**Análisis estático parcial. Todavía no existe una aplicación unificada ni un proyecto Android compilable.**
 
-Los APK son artefactos compilados, no el código fuente. Unir sus archivos DEX, recursos y manifiestos directamente no es una fusión segura: puede provocar conflictos de clases, recursos, dependencias, firmas y configuración de Android. La reconstrucción requiere análisis adicional y, posiblemente, reimplementar partes de la app.
+Los APK se han inspeccionado directamente: inventario ZIP, hashes SHA-256, estructura DEX, recursos y comparación byte a byte de archivos comunes. El análisis preliminar de cadenas DEX muestra, entre otras evidencias, editor de scripts/terreno e integración Anthropic en 2.0; en 2.5 aparecen símbolos de construcción de avatares R15, gestión/importación de plugins, selección/edición de objetos y exportación de modelos. La clasificación final de funciones comunes y exclusivas requiere una decompilación completa con JADX/apktool.
 
-## Inventario inicial
-Consulta [docs/APK_AUDIT.md](docs/APK_AUDIT.md) para los hashes SHA-256, tamaños y diferencias de estructura observadas.
+## Hallazgos verificables
+- 2.0: 16 archivos DEX; 2.5: 11.
+- Las dos versiones comparten 42 archivos de fuentes y 134 archivos de materiales, idénticos byte a byte.
+- De 967 rutas comunes, 245 son idénticas y 722 difieren.
+- El informe detallado está en [docs/APK_AUDIT.md](docs/APK_AUDIT.md).
+
+## Herramientas
+- `python tools/inspect_apks.py archivo.apk`: inventario y SHA-256.
+- `python tools/compare_apks.py version2.0.apk version2.5.apk`: comparación reproducible de estructura, tamaños DEX y hashes de recursos.
 
 ## Archivos originales
 Por seguridad y por límites prácticos de publicación, los APK originales no se incluyen en este repositorio público. Consérvalos localmente y verifica sus hashes con el informe.
 
 ## Próximos pasos
-1. Obtener un volcado/decompilación estática de ambos APK con herramientas Android adecuadas.
-2. Comparar manifiestos, identificadores de paquete, permisos, componentes, recursos y clases.
-3. Elaborar una matriz de funciones nuevas frente a funciones compartidas.
+1. Decodificar manifiestos y recursos con `apktool`.
+2. Descompilar DEX con JADX y comparar clases/métodos.
+3. Elaborar una matriz de funciones nuevas, compartidas, modificadas y retiradas.
 4. Confirmar derechos de modificación y redistribución de los componentes.
 5. Reconstruir en un proyecto Android independiente y probar en dispositivo/emulador.
