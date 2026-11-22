@@ -35,7 +35,25 @@ Ambos APK incluyen cuatro variantes ABI de `libzstd-jni-1.5.6-3.so`: arm64-v8a, 
 
 **Lectura:** hay una base compartida de recursos (incluidas todas las fuentes y materiales) y diferencias sustanciales en DEX y recursos. No es una simple actualización de icono.
 
-## 3. Evidencia preliminar de funciones en DEX
+## 3. Manifiesto Android: diferencias confirmadas
+
+Se decodificó el XML binario del manifiesto directamente.
+
+| Campo | 2.0 | 2.5 |
+|---|---|---|
+| `package` | `com.exampletest.mobilestudiotest` | `com.tetrazbloxy.mobilestudio` |
+| `versionName` | `2.0` | `2.5` |
+| `versionCode` | `3` | `8` |
+| `minSdkVersion` | 24 | 24 |
+| `targetSdkVersion` | 37 | 37 |
+| Clase Application | `com.exampletest.mobilestudiotest.StudioApp` | `com.exampletest.mobilestudiotest.StudioApp` |
+| Activity principal | `com.exampletest.mobilestudiotest.MainActivity` | `com.exampletest.mobilestudiotest.MainActivity` |
+
+En ambos manifiestos se observan `INTERNET`, una activity principal exportada, el proveedor AndroidX Startup no exportado y el receiver de ProfileInstaller protegido por `android.permission.DUMP`. La segunda versión cambia el nombre de paquete y el sufijo de la autoridad AndroidX Startup y del permiso dinámico propio.
+
+**Consecuencia importante:** los APK no tienen el mismo application ID. Android no tratará 2.5 como una actualización normal de 2.0 aunque la clase principal coincida. Una versión unificada debe elegir un único package ID y revisar cuidadosamente las autoridades, permisos, rutas de archivos, deep links y cualquier integración que dependa del ID antiguo.
+
+## 4. Evidencia preliminar de funciones en DEX
 
 La extracción de cadenas y símbolos de DEX revela nombres y textos de componentes propios del paquete `com.exampletest.mobilestudiotest`. Son indicios de código incluido, no garantía de que cada flujo funcione en tiempo de ejecución.
 
@@ -62,11 +80,11 @@ Cadenas/símbolos observados incluyen:
 
 Algunos de estos nombres también aparecen en 2.0 o pueden corresponder a código compartido/renombrado. La lista no es una matriz definitiva de funciones exclusivas. Es necesario comparar clases y métodos con JADX para clasificar cada función como común, añadida, retirada o modificada.
 
-## 4. Identidad visual acordada
+## 5. Identidad visual acordada
 
 El usuario confirmó que la aplicación unificada debe conservar el logotipo de 2.0 (icono azul con franja blanca angular), no el icono cubo/reproducción de 2.5. Las capturas de referencia están en la conversación; no se han sustituido todavía los recursos launcher dentro de un proyecto Android porque aún no existe proyecto reconstruido.
 
-## 5. Decisión técnica provisional
+## 6. Decisión técnica provisional
 
 No elegir todavía 2.0 o 2.5 como base. Aunque 2.0 tiene un volumen de DEX mucho mayor (incluye una integración SDK Anthropic extensa), 2.5 contiene símbolos propios de flujos de edición/Avatar/plugins y cambios en componentes. La selección de base debe esperar a inspeccionar:
 1. package name, versionCode/versionName, minSdk/targetSdk y permisos de ambos manifiestos;
@@ -76,7 +94,7 @@ No elegir todavía 2.0 o 2.5 como base. Aunque 2.0 tiene un volumen de DEX mucho
 
 No se deben combinar DEX ni fusionar APK a ciegas. La ruta segura es reconstruir un proyecto Android independiente y portar o reimplementar las funciones verificadas.
 
-## 6. Próximas tareas concretas
+## 7. Próximas tareas concretas
 
 1. Instalar/usar `apktool` y `jadx` en un entorno de análisis.
 2. Decodificar los manifiestos y extraer los recursos launcher reales.
@@ -85,7 +103,7 @@ No se deben combinar DEX ni fusionar APK a ciegas. La ruta segura es reconstruir
 5. Crear un proyecto Android limpio con identidad visual 2.0 y funciones portadas de forma incremental.
 6. Compilar, firmar con clave propia y probar en dispositivo/emulador.
 
-## 7. Estado y límites
+## 8. Estado y límites
 
 **Estado: análisis estático parcial. No hay todavía código fuente recuperado de forma completa, proyecto Android compilable, fusión funcional ni APK unificado.**
 
