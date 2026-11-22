@@ -1,61 +1,92 @@
 # Informe de análisis estático — Mobile Studio 2.0 vs 2.5
 
-Fecha del inventario: 2026-11-22. Fuente: los dos APK proporcionados en esta conversación. Este informe refleja únicamente los datos que pudieron verificarse leyendo la estructura ZIP de los APK; no equivale a una decompilación completa ni a una prueba funcional.
+Fecha: 2026-11-22. Archivos analizados directamente desde los APK adjuntos. Se combinaron inventario ZIP, hashes, comparación byte a byte de rutas compartidas y extracción de cadenas imprimibles de los archivos DEX usando `strings`. **No se ha hecho aún una decompilación JADX/apktool completa ni una prueba en Android.**
 
-## Archivos examinados
+## 1. Identificación de los archivos
 
-| Versión | Archivo de entrada | Tamaño | SHA-256 |
+| Versión | Archivo | Tamaño | SHA-256 |
 |---|---|---:|---|
-| 2.0 | `mobilestudio_ver2-0.apk` | 34,368,663 bytes | `dc68fd6086d8a62126847f3f169844a108c6d8127d31f4ff29a4b0388a5d354c` |
-| 2.5 | `MobileStudio_v2.5.apk` | 18,083,716 bytes | `8f0fd53ea1d3c048c06476fd43e201927ecb57630f028e41bf6bb547c3645735` |
+| 2.0 | `mobilestudio_ver2-0.apk` | 34,368,663 bytes (32.78 MiB) | `dc68fd6086d8a62126847f3f169844a108c6d8127d31f4ff29a4b0388a5d354c` |
+| 2.5 | `MobileStudio_v2.5.apk` | 18,083,716 bytes (17.25 MiB) | `8f0fd53ea1d3c048c06476fd43e201927ecb57630f028e41bf6bb547c3645735` |
 
-## Estructura observada
+## 2. Estructura y recursos
 
 | Indicador | 2.0 | 2.5 |
 |---|---:|---:|
 | Entradas ZIP | 1,218 | 1,204 |
-| Archivos DEX | 16 | 11 |
-| Fuentes en `assets/fonts/` | 42 | 42 |
-| Archivos en `assets/materials/` | 134 | 134 |
-| Tamaño descomprimido total | 83,700,864 bytes | 29,356,559 bytes |
-| `AndroidManifest.xml` | Presente | Presente |
-| `resources.arsc` | Presente | Presente |
+| DEX | 16 | 11 |
+| Tamaño total de DEX | 67,167,728 bytes | 16,230,276 bytes |
+| Fuentes `assets/fonts/` | 42 | 42 |
+| Materiales `assets/materials/` | 134 | 134 |
+| Entradas descomprimidas | 83,700,864 bytes | 29,356,559 bytes |
+| Manifiesto Android | Sí | Sí |
+| Tabla de recursos | Sí | Sí |
 
-Ambas contienen directorios de recursos Android, bibliotecas nativas y assets de fuentes/materiales. La cantidad de DEX y el tamaño total difieren, pero esos datos por sí solos no identifican qué funciones se añadieron o eliminaron.
+Ambos APK incluyen cuatro variantes ABI de `libzstd-jni-1.5.6-3.so`: arm64-v8a, armeabi-v7a, x86 y x86_64.
 
-## Identidad visual
+### Comparación de rutas comunes
 
-Las imágenes de icono suministradas muestran:
-- **2.0:** icono azul con una franja blanca angular.
-- **2.5:** icono morado/azul con un cubo blanco y símbolo de reproducción.
+- 967 rutas ZIP aparecen en ambas versiones.
+- 245 de esas rutas tienen bytes idénticos.
+- 722 rutas comunes tienen contenido diferente.
+- Los 42 archivos de fuentes son idénticos byte a byte.
+- Los 134 archivos de materiales son idénticos byte a byte.
+- Los recursos launcher usan rutas distintas por cambios de configuración/directorio (`mipmap-*-v4` frente a `mipmap-*`); no se debe asumir que son intercambiables sin revisar manifiesto y XML adaptativos.
 
-Requisito confirmado por el usuario: conservar el icono de 2.0 para la futura aplicación unificada.
+**Lectura:** hay una base compartida de recursos (incluidas todas las fuentes y materiales) y diferencias sustanciales en DEX y recursos. No es una simple actualización de icono.
 
-## Lo que todavía no está verificado
+## 3. Evidencia preliminar de funciones en DEX
 
-No se han extraído ni comparado de forma fiable:
-- nombre e identificador de paquete;
-- versión Android declarada, SDK mínimo/objetivo;
-- permisos, activities, services, receivers y providers;
-- clases/métodos y pantallas concretas;
-- endpoints o dependencias de servicios externos;
-- compatibilidad de bibliotecas y firmas.
+La extracción de cadenas y símbolos de DEX revela nombres y textos de componentes propios del paquete `com.exampletest.mobilestudiotest`. Son indicios de código incluido, no garantía de que cada flujo funcione en tiempo de ejecución.
 
-Por tanto, **no se puede afirmar todavía qué funciones exclusivas de 2.5 se pueden portar** ni que exista una fusión funcional.
+### Evidencia encontrada en 2.0
 
-## Estrategia técnica recomendada
+Cadenas/símbolos observados incluyen:
+- `ScriptEditor` y textos para crear scripts.
+- `TerrainPanel`.
+- `ToolboxPanel`.
+- `PluginApi`, `BetaPlugin` y referencias a errores/validación de plugins.
+- `Avatar`, opciones de avatar R6/R15 y flujo de playtest.
+- `RobloxCloud`, `syncFromCloud`, cuentas/modelos y referencias de publicación/guardado.
+- Dependencias y modelos de cliente Anthropic en DEX (`com.anthropic...`), junto con mensajes sobre API key/guardado. Esto prueba que hay código de integración SDK empaquetado; no prueba que la función IA esté configurada o disponible para el usuario.
 
-1. Decodificar ambos manifiestos y recursos con `apktool`.
-2. Descompilar DEX con JADX y comparar paquetes/clases.
-3. Construir una matriz de funciones basada en pantallas, flujos y referencias de código.
-4. Elegir una base solo después de comparar package ID, SDK, dependencias y arquitectura.
-5. Portar/reimplementar funciones en un proyecto Android limpio; no concatenar DEX ni mezclar APK a ciegas.
-6. Aplicar el icono de 2.0 en los recursos launcher.
-7. Compilar, firmar con una clave propia y probar instalación, actualización, navegación y cada función.
+### Evidencia encontrada en 2.5
 
-## Limitaciones y precauciones
+Cadenas/símbolos observados incluyen:
+- Métodos de avatar: `Avatar.buildR15`, `Avatar.addAccessories`, `Avatar.composeClothing`, `Avatar.applyTo`.
+- Edición de escena: `Studio.multiSelect`, `boxSelect`, `groupSelection`, `ungroupSelection`, `insertObject`, `insertConstraint`, `renderParts`, `copySelection`, `deleteSelection`, `setAnchored`.
+- Gestión de plugins: `managePlugins`, `activatePlugin`, `deactivatePlugin`, `pluginRoot`, `importZip`.
+- Importación/exportación: `openPlaceBytes`, `openRecentFile`, `exportSelection`, `addSelectionToToolbox`.
+- Playtest: `startPlay`, `stopPlay`, `playAs`, `playHere`.
+- Textos visibles extraídos: “Export Selection (.rbxm)”, “Install Plugin from File”, “Install Plugin from Roblox (ID or link)”, “Import Model into Toolbox”, “Publish to Roblox”, “Save a Copy to This Device”.
 
-- La ingeniería inversa puede estar limitada por licencias, derechos de autor o términos de uso. Solo continuar con autorización suficiente.
-- El APK recompilado tendrá que firmarse de nuevo; no será una actualización compatible con la firma original salvo que se disponga legítimamente de la clave de firma original.
-- Los APK originales no se publican aquí porque el repositorio es público y no se ha confirmado permiso de redistribución.
-- Este commit contiene documentación de auditoría, no el código de la aplicación ni un APK unificado.
+Algunos de estos nombres también aparecen en 2.0 o pueden corresponder a código compartido/renombrado. La lista no es una matriz definitiva de funciones exclusivas. Es necesario comparar clases y métodos con JADX para clasificar cada función como común, añadida, retirada o modificada.
+
+## 4. Identidad visual acordada
+
+El usuario confirmó que la aplicación unificada debe conservar el logotipo de 2.0 (icono azul con franja blanca angular), no el icono cubo/reproducción de 2.5. Las capturas de referencia están en la conversación; no se han sustituido todavía los recursos launcher dentro de un proyecto Android porque aún no existe proyecto reconstruido.
+
+## 5. Decisión técnica provisional
+
+No elegir todavía 2.0 o 2.5 como base. Aunque 2.0 tiene un volumen de DEX mucho mayor (incluye una integración SDK Anthropic extensa), 2.5 contiene símbolos propios de flujos de edición/Avatar/plugins y cambios en componentes. La selección de base debe esperar a inspeccionar:
+1. package name, versionCode/versionName, minSdk/targetSdk y permisos de ambos manifiestos;
+2. activities/services/receivers/providers y configuración de componentes;
+3. clases/métodos de código propio con JADX y diferencias de recursos;
+4. dependencias, endpoints y configuración de servicios externos.
+
+No se deben combinar DEX ni fusionar APK a ciegas. La ruta segura es reconstruir un proyecto Android independiente y portar o reimplementar las funciones verificadas.
+
+## 6. Próximas tareas concretas
+
+1. Instalar/usar `apktool` y `jadx` en un entorno de análisis.
+2. Decodificar los manifiestos y extraer los recursos launcher reales.
+3. Exportar inventarios de clases y métodos por paquete; producir una matriz comparativa de funciones.
+4. Revisar licencias, permisos de modificación y derechos de redistribución de cada componente.
+5. Crear un proyecto Android limpio con identidad visual 2.0 y funciones portadas de forma incremental.
+6. Compilar, firmar con clave propia y probar en dispositivo/emulador.
+
+## 7. Estado y límites
+
+**Estado: análisis estático parcial. No hay todavía código fuente recuperado de forma completa, proyecto Android compilable, fusión funcional ni APK unificado.**
+
+Los APK originales no se publican en este repositorio público porque no se ha confirmado autorización de redistribución. La ingeniería inversa y redistribución deben respetar licencias, derechos y términos aplicables. Un APK recompilado tendrá una firma nueva; no será una actualización instalable encima de la aplicación original sin la clave de firma original legítima.
